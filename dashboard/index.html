@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime IoT Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .status-card {
+            height: 300px;
+            overflow-y: auto;
+        }
+        .message-log {
+            height: 400px;
+            overflow-y: auto;
+        }
+        .esp-status {
+            font-size: 0.9em;
+        }
+        #networkVisualization {
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .connection {
+            pointer-events: none;
+        }
+        .esp-node circle {
+            cursor: pointer;
+        }
+        .esp-node text {
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .ship path {
+            cursor: pointer;
+        }
+        .ship text {
+            font-size: 12px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-3">
+        <!-- Header -->
+        <div class="row mb-3">
+            <div class="col">
+                <h2>Maritime IoT Base Station Dashboard</h2>
+                <p class="text-muted">Base Station Status: <span class="badge bg-success">Online</span></p>
+            </div>
+        </div>
+
+        <!-- System Statistics -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Network Load</h6>
+                        <h3 class="card-text" id="networkLoad">75%</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Storage Used</h6>
+                        <h3 class="card-text" id="storageUsed">45%</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Active Ships</h6>
+                        <h3 class="card-text" id="activeShips">3</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Active ESPs</h6>
+                        <h3 class="card-text" id="activeEsps">6</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Network Visualization -->
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Network Visualization</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="networkVisualization"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="col-md-4">
+                <!-- Ship Tracking -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Active Ships</h5>
+                    </div>
+                    <div class="card-body status-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="shipTable">
+                                <thead>
+                                    <tr>
+                                        <th>Ship ID</th>
+                                        <th>Detected By</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="shipTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESP Network Status -->
+                <div class="card mb-3">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">ESP Network Status</h5>
+                    </div>
+                    <div class="card-body status-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="espTable">
+                                <thead>
+                                    <tr>
+                                        <th>ESP ID</th>
+                                        <th>Battery</th>
+                                        <th>Solar</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="espTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Log -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Message Log</h5>
+                        <button class="btn btn-sm btn-light" onclick="document.getElementById('messageLog').innerHTML = ''">Clear</button>
+                    </div>
+                    <div class="card-body message-log">
+                        <div class="list-group" id="messageLog"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <!-- Ship Tracking Table -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Ship Tracking</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Ship ID</th>
+                                            <th>Type</th>
+                                            <th>Position</th>
+                                            <th>Detected By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="shipTrackingBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message History Table -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Message History</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Type</th>
+                                            <th>Content</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="messageHistoryBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <script src="https://unpkg.com/topojson-core@3"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
