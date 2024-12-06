@@ -1,6 +1,6 @@
 # Maritime IoT Ship Monitoring System: Technical Analysis
 
-#Demo
+# Demo
 ![demo](demo.gif)
 
 # System Architecture
