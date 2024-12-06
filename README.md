@@ -4,7 +4,7 @@
 <p align="center">
   <img src="demo.gif" width="800"/>
 </p>
-- MP4 Link:https://drive.google.com/file/d/1zYj0DExo-RgIgz4KoGeDQZ7nAclOBxTC/view?usp=sharing
+- MP4 Link: https://drive.google.com/file/d/1zYj0DExo-RgIgz4KoGeDQZ7nAclOBxTC/view?usp=sharing
 # System Architecture
 
 ```mermaid
