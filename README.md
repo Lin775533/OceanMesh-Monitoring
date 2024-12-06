@@ -1,4 +1,6 @@
 # Maritime IoT Ship Monitoring System: Technical Analysis
+#Demo
+![demo](demo.gif)
 # System Architecture
 
 ```mermaid
